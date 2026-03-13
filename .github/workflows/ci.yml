@@ -11,6 +11,7 @@ jobs:
       BUILD_NAME: petclinic-build
       BUILD_NUMBER: ${{ github.run_number }}
       MODULE_NAME: petclinic-module
+      PLATFORM_REPO: jay-maven-dev-virtual
       # Host-only for Docker login
       JFROG_URL: psblr.jfrog.io
       # Full URL (include scheme) for JFrog CLI config and mvn-config
@@ -41,11 +42,7 @@ jobs:
 
     - name: Configure Maven with JFrog Artifactory
       run:
-        jf mvnc \
-          --repo-resolve-releases=jay-maven-dev-virtual \
-          --repo-resolve-snapshots=jay-maven-dev-virtual \
-          --repo-deploy-releases=jay-maven-dev-virtual \
-          --repo-deploy-snapshots=jay-maven-dev-virtual
+        jf mvnc --repo-deploy-releases=$PLATFORM_REPO --repo-deploy-snapshots=$PLATFORM_REPO --repo-resolve-releases=$PLATFORM_REPO --repo-resolve-snapshots=$PLATFORM_REPO
 
     - name: Mvn Clean Install
       run: |
