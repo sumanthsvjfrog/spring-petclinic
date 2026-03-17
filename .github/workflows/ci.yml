@@ -1,6 +1,11 @@
 name: Petclinic CI with JFrog
 on: workflow_dispatch
 
+permissions:
+  contents: read # Allow reading repository content
+  packages: write # Allow writing to GitHub Packages
+  id-token: write # Required for OIDC authentication with JFrog
+
 jobs:
   build:
     runs-on: ubuntu-latest
