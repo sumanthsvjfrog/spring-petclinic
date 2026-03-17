@@ -43,7 +43,8 @@ jobs:
     - name: Configure Maven with JFrog Artifactory
       run:
         jf mvnc --repo-deploy-releases=$PLATFORM_REPO --repo-deploy-snapshots=$PLATFORM_REPO --repo-resolve-releases=$PLATFORM_REPO --repo-resolve-snapshots=$PLATFORM_REPO
-
+        set -euxo pipefail
+        mkdir -p jfrog-maven
         echo "=== mvn-config result, listing ~/.m2 ==="
         ls -la ~/.m2 || true
         echo "=== generated settings.xml ==="
