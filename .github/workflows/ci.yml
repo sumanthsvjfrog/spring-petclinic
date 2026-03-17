@@ -74,7 +74,7 @@ jobs:
 
     - name: Mvn Clean Install
       run: |
-           jf mvn clean install -U -X --build-name=$BUILD_NAME --build-number=$BUILD_NUMBER --module $MODULE_NAME
+           jf mvn clean install -U --build-name=$BUILD_NAME --build-number=$BUILD_NUMBER --module $MODULE_NAME
            
     - name: Docker Login to Artifactory
       uses: docker/login-action@v2
