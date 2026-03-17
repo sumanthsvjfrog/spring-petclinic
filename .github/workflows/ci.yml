@@ -31,9 +31,12 @@ jobs:
 
     - name: Setup JFrog CLI
       uses: jfrog/setup-jfrog-cli@v4
-      env:
-        JF_URL: https://psblr.jfrog.io
-        JF_ACCESS_TOKEN: ${{ secrets.JFROG_TOKEN }}
+      env:  
+           JF_URL: ${{ vars.JF_URL }}
+           #JF_USER: ${{ vars.JF_USER }}
+           #JF_ACCESS_TOKEN: ${{ vars.JF_ACCESS_TOKEN }}                  
+      with:
+           oidc-provider-name: destgithub
 
     - name: Check connectivity
       run: |
@@ -43,29 +46,30 @@ jobs:
     - name: Configure Maven with JFrog Artifactory
       run:
         jf mvnc --repo-deploy-releases=$PLATFORM_REPO --repo-deploy-snapshots=$PLATFORM_REPO --repo-resolve-releases=$PLATFORM_REPO --repo-resolve-snapshots=$PLATFORM_REPO
-        set -euxo pipefail
-        mkdir -p jfrog-maven
-        echo "=== mvn-config result, listing ~/.m2 ==="
-        ls -la ~/.m2 || true
-        echo "=== generated settings.xml ==="
-        cat ~/.m2/settings.xml || true
-        cp ~/.m2/settings.xml jfrog-maven/settings.xml || true 
         
-    - name: Verify Maven Config
-      run: |
-        echo "===== settings.xml ====="
-        cat jfrog-maven/settings.xml || true
-    - name: Maven Build with JFrog
-      working-directory: "${{ github.workspace }}"
-      run: |
-        jf mvn clean package -DskipTests \
-          --settings ./jfrog-maven/settings.xml \
-          --build-name=${BUILD_NAME} \
-          --build-number=${BUILD_NUMBER}
-
-    # - name: Mvn Clean Install
+        # set -euxo pipefail
+        # mkdir -p jfrog-maven
+        # echo "=== mvn-config result, listing ~/.m2 ==="
+        # ls -la ~/.m2 || true
+        # echo "=== generated settings.xml ==="
+        # cat ~/.m2/settings.xml || true
+        # cp ~/.m2/settings.xml jfrog-maven/settings.xml || true 
+        
+    # - name: Verify Maven Config
     #   run: |
-    #        jf mvn clean install -U -X --build-name=$BUILD_NAME --build-number=$BUILD_NUMBER --module $MODULE_NAME
+    #     echo "===== settings.xml ====="
+    #     cat jfrog-maven/settings.xml || true
+    # - name: Maven Build with JFrog
+    #   # working-directory: "${{ github.workspace }}"
+    #   run: |
+    #     jf mvn clean package -DskipTests \
+    #       --settings ./jfrog-maven/settings.xml \
+    #       --build-name=${BUILD_NAME} \
+    #       --build-number=${BUILD_NUMBER}
+
+    - name: Mvn Clean Install
+      run: |
+           jf mvn clean install -U -X --build-name=$BUILD_NAME --build-number=$BUILD_NUMBER --module $MODULE_NAME
            
     - name: Docker Login to Artifactory
       uses: docker/login-action@v2
